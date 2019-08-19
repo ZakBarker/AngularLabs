@@ -12,7 +12,7 @@ $( document ).ready(function() {
         $.ajax({
             type : "POST",
             contentType : 'application/json',
-            url : window.location + 'api/login',
+            url : window.location + 'api/login', 
             data : JSON.stringify(formData),
             dataType : 'json',
             success : function(customer) {
