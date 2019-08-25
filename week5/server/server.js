@@ -1,13 +1,17 @@
 const express = require("express");
 const app = express();
-const path = require("path");
-const bodyParser = require("body-parser");
 const cors = require("cors");
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
+const sockets = require('./socket');
+const server = require("./listen");
 
-app.use(bodyParser.json());
+const PORT = 3000;
+
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../chat/dist/chat/")));
 
+sockets.connect(io, PORT);
 
+server.listen(http, PORT);
 
-require("./listen.js")(app, path);
+app.use(express.static(__dirname + "../chat/dist/chat"));
