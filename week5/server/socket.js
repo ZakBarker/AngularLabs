@@ -1,10 +1,109 @@
 module.exports = {
     connect: function(io, PORT){
-        io.on('connection', (socket) =>{
-            console.log("user connection on port " + PORT + " : " + socket.id);
-            socket.on("message", (message)=>{
-                io.emit("message", message);
+        var rooms = ["room1", "room2", "room3", "room4"];
+        var socketRoom = [];
+        var socketRoomnum = [];
+
+        const chat = io.off("/chat");
+
+            chat.on("connection", (socket) => {
+
+                socket.on("message", (message)=>{
+                    for(let i = 0; i < socketRoom.length; i++){
+                        if(socketRoom[i][0] == socket.id){
+                            chat.to(socketRoom[i][1]).emit("message", message);
+                        }
+                    }
+                });
+
+                socket.on("newroom", (newroom)=>{
+                    if(rooms.indexOf(newroom) == -1){
+                        rooms.push(newroom);
+                        chat.emit("roomlist", JSON.stringify(rooms));
+                    }
+                });
+
+                socket.on("roomlist", (m)=>{
+                    console.log(m);
+                    chat.emit("roomlist", JSON.stringify(rooms));
+                });
+
+                socket.on("numusers", (room)=>{
+                    let usercount = 0;
+
+                    for(let i = 0; i <socketRoomnum.length; i++){
+                        if(socketRoomnum[i][0] == room){
+                            usercount = socketRoomnum[i][1];
+                        }
+                    }
+                    chat.in(room).emit("numusers", usercount);
+                });
+
+                socket.on("joinRoom", (room)=>{
+                    if(rooms.includes(room)){
+                        socket.join(room, ()=>{
+                            let inroomSocketarray = false;
+                            for(let i = 0; i < socketRoom.length; i++){
+                                if(socketRoom[i][0] == socket.id){
+                                    socketRoom[i][1] = room;
+                                    inroomSocketarray = true;
+                                }
+                            }
+                            if(inroomSocketarray == false){
+                                socketRoom.push([socket.id, room]);
+                                hasroomnum = false;
+                                for(let j = 0; j < socketRoomnum.length; j++){
+                                    if(socketRoomnum[j][0] == room){
+                                        socketRoomnum[j][1] = socketRoomnum[j][1] + 1;
+                                        hasroomnum = true;
+                                    }
+                                }
+                            if (hasRoomnum == false){
+                                socketRoomnum.push([room, 1]);
+                            }
+
+                        }
+
+                            chat.in(room).emit("notice", "A new user has joined");
+                        });
+                        return chat.in(room).emit("joined", room);
+                    }
+                });
+
+                socket.on("leaveRoom", (room)=>{
+                    for(let i = 0; i < socketRoom.length; i++){
+                        if (socketRoom[i][0] == socket.id){
+                            socketRoom.splice(i, 1);
+                            socket.leave(room);
+                            chat.to(room).emit("notice", "A user has left");
+                        }
+                    }
+
+                    for(let j = 0; j < socketRoomnum.length; j++){
+                        if(socketRoomnum[j][0] == room){
+                            socketRoomnum[j][1] == socketRoomnum[j][1] - 1;
+                            if (socketRoomnum[j][1] == 0){
+                                socketRoomnum.splice(j, 1);
+                            }
+                        }
+                    }
+                });
             });
-        });
+            
+            socket.on("disconnect", ()=>{
+                chat.emit("disconnect");
+                for(let i = 0; i < socketRoom.length; i++){
+                    if(socketRoom[i][0] == socket.id){
+                        socketRoom.splice(i, 1);
+                    }
+                }
+                for(let j = 0; j <socketRoomnum.length; j++){
+                    if(socketRoomnum[j][0] == socket.room){
+                        socketRoomnum[j][1] = socketRoomnum[j][1] -1;
+                    }
+                }
+                console.log("Client disconnected");
+            });
+        
     }
 }

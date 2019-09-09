@@ -1,0 +1,23 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+  <ul class="nav navbar-nav">
+  <li class="active"><a class="nav-link" (click)='goBack()'>Back to Account</a></li>
+  <li> <a class="nav-link" (click)="logout()">logout</a></li>
+  </ul>
+  </div>
+ </nav>
+ <div class="container">
+ </div>
+
+ <h1>Change Your Info</h1>
+ <form>
+   <label>Username: </label>
+   <input type='text' name='username' [(ngModel)]='username'>
+   <label>Email: </label>
+   <input type='text' name='email' [(ngModel)]='email'>
+   <label>Birthday: </label>
+   <input type='text' name='birthday' [(ngModel)]='birthday'>
+   <label>Age: </label>
+   <input type='number' name='age' [(ngModel)]='age'>
+   <button (click)="changeDeets()">Change Deets</button>
+ </form>
