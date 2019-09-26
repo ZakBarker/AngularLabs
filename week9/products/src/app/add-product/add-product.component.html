@@ -1,0 +1,19 @@
+<h1> Chuck a Product in There </h1>
+
+<form>
+  <label>Id</label><br>
+  <input type="number" [(ngModel)]="id" name="id" id="id"><br>
+  <label>Name</label><br>
+  <input type="text" [(ngModel)]="name"  name="name" id="name"><br>
+  <label>Price</label><br>
+  <input type="number" [(ngModel)]="price"  name="price" id="price"><br>
+  <label>Description</label><br>
+  <input type="text" [(ngModel)]="description"  name="description" id="description"><br>
+  <label>Units</label><br>
+  <input type="number" [(ngModel)]="units"  name="units" id="units"><br>
+  <input type="button" (click)="addProduct()" value="Add Product">
+</form><br>
+
+<p *ngIf="err">{{err}}</p>
+
+<button (click)="goList()">Go To List</button>

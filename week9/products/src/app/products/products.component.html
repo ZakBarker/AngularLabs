@@ -1,0 +1,19 @@
+<h1>The Products Live Here</h1>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Units</th>
+    <th>Description</th>
+  </tr>
+  <tr *ngFor="let product of products">
+    <td>{{product.id}}</td>
+    <td>{{product.name}}</td>
+    <td>{{product.price}}</td>
+    <td>{{product.units}}</td>
+    <td>{{product.description}}</td>
+    <td><span><button (click)="goUpdate(product._id)">Update</button></span><span><button (click)="delete(product._id)">Delete</button></span></td>
+</table><br>
+
+<button (click)="goAdd()">New Product</button>
